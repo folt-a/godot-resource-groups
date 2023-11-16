@@ -47,6 +47,45 @@ func load_matching(includes:Array[String], excludes:Array[String]) -> Array[Reso
 		
 	return result
 
+## Loads all resources in this resource group and returns them
+func load_all_dictionary(with_extension:bool = false) -> Dictionary:
+	var result:Dictionary = {}
+	for path in paths:
+		if with_extension:
+			result[path] = load(path)
+		else:
+			var path_without_extension = path.get_basename().get_basename()
+			result[path_without_extension] = load(path)
+	
+	return result
+
+## Gets all paths of resources inside of this resource group that
+## match the given include and exclude criteria
+func get_matching_paths_dictionary(includes:Array[String], excludes:Array[String], with_extension:bool = false) -> Dictionary:
+	var dictionary:Dictionary = {}
+	for path in get_matching_paths(includes, excludes):
+		if with_extension:
+			dictionary[path] = path
+		else:
+			var path_without_extension = path.get_basename().get_basename()
+			dictionary[path_without_extension] = path
+	
+	return result
+
+## Loads all resources in this resource group that match the given
+## include and exclude criteria
+func load_matching_dictionary(includes:Array[String], excludes:Array[String], with_extension:bool = false) -> Dictionary:
+	var result:Dictionary = {}
+	var matching_paths = get_matching_paths(includes, excludes)
+	for path in matching_paths:
+		if with_extension:
+			result[path] = load(path)
+		else:
+			var path_without_extension = path.get_basename().get_basename()
+			result[path_without_extension] = load(path)
+		
+	return result
+
 
 # Workaround for C# interop not being able to properly convert arrays into Godot land.
 func __csharp_get_matching_paths(includes:Array, excludes:Array) -> Array[String]:
